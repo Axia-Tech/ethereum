@@ -1,3 +1,4 @@
+use crate::util::enveloped;
 use crate::Bytes;
 use alloc::vec::Vec;
 use core::ops::Deref;
@@ -172,17 +173,17 @@ impl codec::Decode for TransactionSignature {
 	feature = "with-codec",
 	derive(codec::Encode, codec::Decode, scale_info::TypeInfo)
 )]
-#[cfg_attr(feature = "with-serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "with-serde", derive(serde::Serialize, serde::Deserialize), serde(rename_all = "camelCase"))]
 pub struct AccessListItem {
 	pub address: Address,
-	pub slots: Vec<H256>,
+	pub storage_keys: Vec<H256>,
 }
 
 impl Encodable for AccessListItem {
 	fn rlp_append(&self, s: &mut RlpStream) {
 		s.begin_list(2);
 		s.append(&self.address);
-		s.append_list(&self.slots);
+		s.append_list(&self.storage_keys);
 	}
 }
 
@@ -190,7 +191,7 @@ impl Decodable for AccessListItem {
 	fn decode(rlp: &Rlp) -> Result<Self, DecoderError> {
 		Ok(Self {
 			address: rlp.val_at(0)?,
-			slots: rlp.list_at(1)?,
+			storage_keys: rlp.list_at(1)?,
 		})
 	}
 }
@@ -300,7 +301,11 @@ impl Encodable for EIP2930TransactionMessage {
 
 impl EIP2930TransactionMessage {
 	pub fn hash(&self) -> H256 {
-		H256::from_slice(Keccak256::digest(&rlp::encode(self)).as_slice())
+		let encoded = rlp::encode(self);
+		let mut out = alloc::vec![0; 1 + encoded.len()];
+		out[0] = 1;
+		out[1..].copy_from_slice(&encoded);
+		H256::from_slice(Keccak256::digest(&out).as_slice())
 	}
 }
 
@@ -335,7 +340,7 @@ impl From<EIP1559Transaction> for EIP1559TransactionMessage {
 
 impl Encodable for EIP1559TransactionMessage {
 	fn rlp_append(&self, s: &mut RlpStream) {
-		s.begin_list(8);
+		s.begin_list(9);
 		s.append(&self.chain_id);
 		s.append(&self.nonce);
 		s.append(&self.max_priority_fee_per_gas);
@@ -350,7 +355,11 @@ impl Encodable for EIP1559TransactionMessage {
 
 impl EIP1559TransactionMessage {
 	pub fn hash(&self) -> H256 {
-		H256::from_slice(Keccak256::digest(&rlp::encode(self)).as_slice())
+		let encoded = rlp::encode(self);
+		let mut out = alloc::vec![0; 1 + encoded.len()];
+		out[0] = 2;
+		out[1..].copy_from_slice(&encoded);
+		H256::from_slice(Keccak256::digest(&out).as_slice())
 	}
 }
 
@@ -368,6 +377,12 @@ pub struct LegacyTransaction {
 	pub value: U256,
 	pub input: Bytes,
 	pub signature: TransactionSignature,
+}
+
+impl LegacyTransaction {
+	pub fn hash(&self) -> H256 {
+		H256::from_slice(Keccak256::digest(&rlp::encode(self)).as_slice())
+	}
 }
 
 impl Encodable for LegacyTransaction {
@@ -435,6 +450,16 @@ pub struct EIP2930Transaction {
 	pub odd_y_axia: bool,
 	pub r: H256,
 	pub s: H256,
+}
+
+impl EIP2930Transaction {
+	pub fn hash(&self) -> H256 {
+		let encoded = rlp::encode(self);
+		let mut out = alloc::vec![0; 1 + encoded.len()];
+		out[0] = 1;
+		out[1..].copy_from_slice(&encoded);
+		H256::from_slice(Keccak256::digest(&out).as_slice())
+	}
 }
 
 impl Encodable for EIP2930Transaction {
@@ -505,6 +530,16 @@ pub struct EIP1559Transaction {
 	pub s: H256,
 }
 
+impl EIP1559Transaction {
+	pub fn hash(&self) -> H256 {
+		let encoded = rlp::encode(self);
+		let mut out = alloc::vec![0; 1 + encoded.len()];
+		out[0] = 2;
+		out[1..].copy_from_slice(&encoded);
+		H256::from_slice(Keccak256::digest(&out).as_slice())
+	}
+}
+
 impl Encodable for EIP1559Transaction {
 	fn rlp_append(&self, s: &mut RlpStream) {
 		s.begin_list(12);
@@ -557,13 +592,25 @@ impl Decodable for EIP1559Transaction {
 pub type TransactionV0 = LegacyTransaction;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-#[cfg_attr(feature = "with-codec", derive(codec::Encode, codec::Decode))]
+#[cfg_attr(
+	feature = "with-codec",
+	derive(codec::Encode, codec::Decode, scale_info::TypeInfo)
+)]
 #[cfg_attr(feature = "with-serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum TransactionV1 {
 	/// Legacy transaction type
 	Legacy(LegacyTransaction),
 	/// EIP-2930 transaction
 	EIP2930(EIP2930Transaction),
+}
+
+impl TransactionV1 {
+	pub fn hash(&self) -> H256 {
+		match self {
+			TransactionV1::Legacy(t) => t.hash(),
+			TransactionV1::EIP2930(t) => t.hash(),
+		}
+	}
 }
 
 impl Encodable for TransactionV1 {
@@ -610,6 +657,16 @@ pub enum TransactionV2 {
 	EIP1559(EIP1559Transaction),
 }
 
+impl TransactionV2 {
+	pub fn hash(&self) -> H256 {
+		match self {
+			TransactionV2::Legacy(t) => t.hash(),
+			TransactionV2::EIP2930(t) => t.hash(),
+			TransactionV2::EIP1559(t) => t.hash(),
+		}
+	}
+}
+
 impl Encodable for TransactionV2 {
 	fn rlp_append(&self, s: &mut RlpStream) {
 		match self {
@@ -644,13 +701,28 @@ impl Decodable for TransactionV2 {
 	}
 }
 
-fn enveloped<T: Encodable>(id: u8, v: &T, s: &mut RlpStream) {
-	let encoded = rlp::encode(v);
-	let mut out = alloc::vec![0; 1 + encoded.len()];
-	out[0] = id;
-	out[1..].copy_from_slice(&encoded);
-	out.rlp_append(s)
+impl From<LegacyTransaction> for TransactionV1 {
+	fn from(t: LegacyTransaction) -> Self {
+		TransactionV1::Legacy(t)
+	}
 }
+
+impl From<LegacyTransaction> for TransactionV2 {
+	fn from(t: LegacyTransaction) -> Self {
+		TransactionV2::Legacy(t)
+	}
+}
+
+impl From<TransactionV1> for TransactionV2 {
+	fn from(t: TransactionV1) -> Self {
+		match t {
+			TransactionV1::Legacy(t) => TransactionV2::Legacy(t),
+			TransactionV1::EIP2930(t) => TransactionV2::EIP2930(t),
+		}
+	}
+}
+
+pub type TransactionAny = TransactionV2;
 
 #[cfg(test)]
 mod tests {
@@ -698,7 +770,7 @@ mod tests {
 			access_list: vec![
 				AccessListItem {
 					address: hex!("de0b295669a9fd93d5f28d9ec85e40f4cb697bae").into(),
-					slots: vec![
+					storage_keys: vec![
 						hex!("0000000000000000000000000000000000000000000000000000000000000003")
 							.into(),
 						hex!("0000000000000000000000000000000000000000000000000000000000000007")
@@ -707,7 +779,7 @@ mod tests {
 				},
 				AccessListItem {
 					address: hex!("bb9bc244d798123fde783fcc1c72d3bb8c189413").into(),
-					slots: vec![],
+					storage_keys: vec![],
 				},
 			],
 			odd_y_axia: false,
@@ -734,7 +806,7 @@ mod tests {
 			access_list: vec![
 				AccessListItem {
 					address: hex!("de0b295669a9fd93d5f28d9ec85e40f4cb697bae").into(),
-					slots: vec![
+					storage_keys: vec![
 						hex!("0000000000000000000000000000000000000000000000000000000000000003")
 							.into(),
 						hex!("0000000000000000000000000000000000000000000000000000000000000007")
@@ -743,7 +815,7 @@ mod tests {
 				},
 				AccessListItem {
 					address: hex!("bb9bc244d798123fde783fcc1c72d3bb8c189413").into(),
-					slots: vec![],
+					storage_keys: vec![],
 				},
 			],
 			odd_y_axia: false,

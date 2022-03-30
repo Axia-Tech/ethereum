@@ -9,30 +9,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8da52d66c7071e2e3fa2a1e5c6d088fec47b593032b254f5e980de8ea54454d6"
 
 [[package]]
-name = "axia-scale-codec"
-version = "2.3.1"
-source = "git+https://github.com/axia-tech/axia-scale-codec?branch=v2.3.1#bc2cdde93e738d57df30daac985160ca387030c2"
-dependencies = [
- "arrayvec",
- "axia-scale-codec-derive",
- "bitvec",
- "byte-slice-cast",
- "impl-trait-for-tuples",
- "serde",
-]
-
-[[package]]
-name = "axia-scale-codec-derive"
-version = "2.3.1"
-source = "git+https://github.com/axia-tech/axia-scale-codec?branch=v2.3.1#bc2cdde93e738d57df30daac985160ca387030c2"
-dependencies = [
- "proc-macro-crate",
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "bitvec"
 version = "0.20.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -62,9 +38,9 @@ checksum = "8d696c370c750c948ada61c69a0ee2cbbb9c50b1019ddb86d9317157a99c2cae"
 
 [[package]]
 name = "byte-slice-cast"
-version = "1.2.0"
+version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1d30c751592b77c499e7bce34d99d67c2c11bdc0574e9a488ddade14150a4698"
+checksum = "87c5fdd0166095e1d463fc6cc01aa8ce547ad77a4e84d42eb6762b084e28067e"
 
 [[package]]
 name = "byteorder"
@@ -113,7 +89,8 @@ dependencies = [
 [[package]]
 name = "ethbloom"
 version = "0.11.1"
-source = "git+https://github.com/axia-tech/axia-common?branch=master#b691d69b22f3b8a7a0628033ea1a9abcbbb28b8e"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bfb684ac8fa8f6c5759f788862bb22ec6fe3cb392f6bfd08e3c64b603661e3f8"
 dependencies = [
  "crunchy",
  "fixed-hash",
@@ -126,14 +103,14 @@ dependencies = [
 
 [[package]]
 name = "ethereum"
-version = "0.9.0"
+version = "0.11.1"
 dependencies = [
- "axia-scale-codec",
  "bytes",
  "ethereum-types",
  "hash-db",
  "hash256-std-hasher",
  "hex-literal",
+ "parity-scale-codec",
  "rand",
  "rlp",
  "rlp-derive",
@@ -146,7 +123,8 @@ dependencies = [
 [[package]]
 name = "ethereum-types"
 version = "0.12.1"
-source = "git+https://github.com/axia-tech/axia-common?branch=master#b691d69b22f3b8a7a0628033ea1a9abcbbb28b8e"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "05136f7057fe789f06e6d41d07b34e6f70d8c86e5693b60f97aaa6553553bdaf"
 dependencies = [
  "ethbloom",
  "fixed-hash",
@@ -161,7 +139,8 @@ dependencies = [
 [[package]]
 name = "fixed-hash"
 version = "0.7.0"
-source = "git+https://github.com/axia-tech/axia-common?branch=master#b691d69b22f3b8a7a0628033ea1a9abcbbb28b8e"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cfcf0ed7fe52a17a03854ec54a9f76d6d84508d1c0e66bc1793301c73fc8493c"
 dependencies = [
  "byteorder",
  "rand",
@@ -187,9 +166,9 @@ dependencies = [
 
 [[package]]
 name = "getrandom"
-version = "0.2.5"
+version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d39cd93900197114fa1fcb7ae84ca742095eed9442088988ae74fa744e930e77"
+checksum = "9be70c98951c83b8d2f8f60d7065fa6d5146873094452a1008da8c2f1e4205ad"
 dependencies = [
  "cfg-if",
  "libc",
@@ -226,15 +205,17 @@ checksum = "7ebdb29d2ea9ed0083cd8cece49bbd968021bd99b0849edb4a9a7ee0fdf6a4e0"
 [[package]]
 name = "impl-codec"
 version = "0.5.1"
-source = "git+https://github.com/axia-tech/axia-common?branch=master#b691d69b22f3b8a7a0628033ea1a9abcbbb28b8e"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "161ebdfec3c8e3b52bf61c4f3550a1eea4f9579d10dc1b936f3171ebdcd6c443"
 dependencies = [
- "axia-scale-codec",
+ "parity-scale-codec",
 ]
 
 [[package]]
 name = "impl-rlp"
 version = "0.3.0"
-source = "git+https://github.com/axia-tech/axia-common?branch=master#b691d69b22f3b8a7a0628033ea1a9abcbbb28b8e"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f28220f89297a075ddc7245cd538076ee98b01f2a9c23a53a4f1105d5a322808"
 dependencies = [
  "rlp",
 ]
@@ -242,7 +223,8 @@ dependencies = [
 [[package]]
 name = "impl-serde"
 version = "0.3.2"
-source = "git+https://github.com/axia-tech/axia-common?branch=master#b691d69b22f3b8a7a0628033ea1a9abcbbb28b8e"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4551f042f3438e64dbd6226b20527fc84a6e1fe65688b58746a2f53623f25f5c"
 dependencies = [
  "serde",
 ]
@@ -266,15 +248,41 @@ checksum = "67c21572b4949434e4fc1e1978b99c5f77064153c59d998bf13ecd96fb5ecba7"
 
 [[package]]
 name = "libc"
-version = "0.2.119"
+version = "0.2.121"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1bf2e165bb3457c8e098ea76f3e3bc9db55f87aa90d52d0e6be741470916aaa4"
+checksum = "efaa7b300f3b5fe8eb6bf21ce3895e1751d9665086af2d64b42f19701015ff4f"
 
 [[package]]
 name = "opaque-debug"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
+
+[[package]]
+name = "parity-scale-codec"
+version = "2.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "373b1a4c1338d9cd3d1fa53b3a11bdab5ab6bd80a20f7f7becd76953ae2be909"
+dependencies = [
+ "arrayvec",
+ "bitvec",
+ "byte-slice-cast",
+ "impl-trait-for-tuples",
+ "parity-scale-codec-derive",
+ "serde",
+]
+
+[[package]]
+name = "parity-scale-codec-derive"
+version = "2.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1557010476e0595c9b568d16dcfb81b93cdeb157612726f5170d31aa707bed27"
+dependencies = [
+ "proc-macro-crate",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
 
 [[package]]
 name = "ppv-lite86"
@@ -285,7 +293,8 @@ checksum = "eb9f9e6e233e5c4a35559a617bf40a4ec447db2e84c20b55a6f83167b7e57872"
 [[package]]
 name = "primitive-types"
 version = "0.10.1"
-source = "git+https://github.com/axia-tech/axia-common?branch=master#b691d69b22f3b8a7a0628033ea1a9abcbbb28b8e"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "05e4722c697a58a99d5d06a08c30821d7c082a4632198de1eaa5a6c22ef42373"
 dependencies = [
  "fixed-hash",
  "impl-codec",
@@ -297,9 +306,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro-crate"
-version = "1.1.2"
+version = "1.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9dada8c9981fcf32929c3c0f0cd796a9284aca335565227ed88c83babb1d43dc"
+checksum = "e17d47ce914bf4de440332250b0edd23ce48c005f59fab39d3335866b114f11a"
 dependencies = [
  "thiserror",
  "toml",
@@ -316,9 +325,9 @@ dependencies = [
 
 [[package]]
 name = "quote"
-version = "1.0.15"
+version = "1.0.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "864d3e96a899863136fc6e99f3d7cae289dafe43bf2c5ac19b70df7210c0a145"
+checksum = "632d02bff7f874a36f33ea8bb416cd484b90cc66c1194b1a1110d067a7013f58"
 dependencies = [
  "proc-macro2",
 ]
@@ -362,7 +371,8 @@ dependencies = [
 [[package]]
 name = "rlp"
 version = "0.5.1"
-source = "git+https://github.com/axia-tech/axia-common?branch=master#b691d69b22f3b8a7a0628033ea1a9abcbbb28b8e"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "999508abb0ae792aabed2460c45b89106d97fe4adac593bdaef433c2605847b5"
 dependencies = [
  "bytes",
  "rustc-hex",
@@ -388,19 +398,21 @@ checksum = "3e75f6a532d0fd9f7f13144f392b6ad56a32696bfcd9c78f797f16bbb6f072d6"
 [[package]]
 name = "scale-info"
 version = "1.0.0"
-source = "git+https://github.com/axia-tech/scale-info?branch=v1.0.0#bee5fa611b8811178471878b34a58d4ba634282b"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5c55b744399c25532d63a0d2789b109df8d46fc93752d46b0782991a931a782f"
 dependencies = [
- "axia-scale-codec",
  "bitvec",
  "cfg-if",
  "derive_more",
+ "parity-scale-codec",
  "scale-info-derive",
 ]
 
 [[package]]
 name = "scale-info-derive"
 version = "1.0.0"
-source = "git+https://github.com/axia-tech/scale-info?branch=v1.0.0#bee5fa611b8811178471878b34a58d4ba634282b"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "baeb2780690380592f86205aa4ee49815feb2acad8c2f59e6dd207148c3f1fcd"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -448,9 +460,9 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "syn"
-version = "1.0.86"
+version = "1.0.90"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8a65b3f4ffa0092e9887669db0eae07941f023991ab58ea44da8fe8e2d511c6b"
+checksum = "704df27628939572cd88d33f171cd6f896f4eaca85252c6e0a72d8d8287ee86f"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -504,7 +516,8 @@ dependencies = [
 [[package]]
 name = "triehash"
 version = "0.8.4"
-source = "git+https://github.com/axia-tech/axia-common?branch=master#b691d69b22f3b8a7a0628033ea1a9abcbbb28b8e"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a1631b201eb031b563d2e85ca18ec8092508e262a3196ce9bd10a67ec87b9f5c"
 dependencies = [
  "hash-db",
  "rlp",
@@ -518,8 +531,9 @@ checksum = "dcf81ac59edc17cc8697ff311e8f5ef2d99fcbd9817b34cec66f90b6c3dfd987"
 
 [[package]]
 name = "uint"
-version = "0.9.1"
-source = "git+https://github.com/axia-tech/axia-common?branch=master#b691d69b22f3b8a7a0628033ea1a9abcbbb28b8e"
+version = "0.9.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "12f03af7ccf01dd611cc450a0d10dbc9b745770d096473e2faf0ca6e2d66d1e0"
 dependencies = [
  "byteorder",
  "crunchy",
